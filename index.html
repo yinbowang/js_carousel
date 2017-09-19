@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .main_div{
+            width: 800px;
+            overflow: hidden;
+            margin: 30px auto;
+            position: relative;
+        }
+        .ul_img{
+            width: 6000px;
+            transition: all 1s;
+        }
+        .li_img{
+            width: 800px;
+            float: left;
+            list-style: none;
+        }
+        img{
+            width: 100%;
+        }
+        .arrows{
+            position: absolute;
+            left: 0px;
+            top: 250px;
+            width: 800px;
+            z-index: 100;
+        }
+        .arrows span{
+            font-size: 50px;
+            color: seashell;
+        }
+        .arrows span:hover {
+            /*变小手*/
+            cursor: pointer;
+            background-color: rgba(192, 192, 192, 0.29);
+        }
+        .bottom{
+            text-align: center;
+        }
+        .span_btn{
+            display: inline-block;
+            width: 60px;
+            height: 10px;
+            background-color: aquamarine;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .span_btn:hover{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main_div">
+    <div class="arrows">
+        <span  class="arrow"><</span>
+        <span  class="arrow" style="float: right">></span>
+    </div>
+
+    <ul class="ul_img">
+        <li class="li_img"><img src="images/1.jpg" /></li>
+        <li class="li_img"><img src="images/2.jpg" /></li>
+        <li class="li_img"><img src="images/3.jpg" /></li>
+        <li class="li_img"><img src="images/4.jpg" /></li>
+    </ul>
+</div>
+
+<div class="bottom">
+    <span class="span_btn"></span>
+    <span class="span_btn"></span>
+    <span class="span_btn"></span>
+    <span class="span_btn"></span>
+</div>
+
+<script>
+
+    var count = 0;
+
+    var isgo = false;
+
+    var timer;
+
+    window.onload = function () {
+        //获取ul
+      var ul = document.getElementsByClassName('ul_img')[0];
+      //获取所有的li
+      var lis = document.getElementsByClassName('li_img');
+      //获取两个箭头
+      var arrows = document.getElementsByClassName('arrow');
+      //获取下面的四个按钮
+      var btns = document.getElementsByClassName('span_btn');
+      //默认选中第一个
+      btns[0].style.backgroundColor = 'red';
+
+      //用定时器操作图片移动
+        function pictureMove() {
+
+            //开启定时器
+            timer = setInterval(function () {
+
+                if(isgo == false)
+                {
+                    count ++;
+                    ul.style.transform = "translate(" + -800 * count + "px)";
+                    if(count >= lis.length-1)
+                    {
+                        count = lis.length-1;
+                        isgo = true;
+                    }
+
+
+                }else{
+                    count--;
+                    ul.style.transform = "translate(" + -800 * count + "px)";
+                    if(count <= 0)
+                    {
+                        count = 0;
+                        isgo = false;
+                    }
+                }
+
+                for(var i=0; i<btns.length ; i++)
+                {
+                    btns[i].style.backgroundColor = 'aquamarine';
+                }
+
+                btns[count].style.backgroundColor = 'red';
+
+
+            },3000);
+        }
+
+        //调用
+        pictureMove();
+
+        //鼠标放到底部按钮上去的操作
+        for(var i=0; i<btns.length ; i++)
+        {
+            //给按钮加个index属性
+            btns[i].index = i;
+
+            //鼠标放上去的时候
+            btns[i].onmouseover = function () {
+
+                //关闭定时器
+                clearInterval(timer);
+
+                //放上去的变为红色，其他的变为原来的
+                for(var i=0; i<btns.length ; i++)
+                {
+                    btns[i].style.backgroundColor = 'aquamarine';
+                }
+                this.style.backgroundColor = 'red';
+
+                if(this.index == 3)
+                {
+                    isgo = true;
+                }
+
+                if(this.index == 0)
+                {
+                    isgo = false;
+                }
+
+                count = this.index;
+                ul.style.transform = "translate("+-800*this.index+"px)";
+
+
+            };
+
+
+            //鼠标离开
+            btns[i].onmouseout = function () {
+
+                pictureMove();
+
+            };
+
+        }
+
+        /*鼠标进入左右方向键操作*/
+        for (var i = 0; i < arrows.length; i++) {
+            arrows[i].index = i;
+            //鼠标悬停时
+            arrows[i].onmouseover = function () {
+                //停止计时器
+                clearInterval(timer);
+            }
+            //鼠标离开时
+            arrows[i].onmouseout = function () {
+                //添加计时器
+                pictureMove();
+            }
+            arrows[i].onclick = function () {
+                //区分左右
+                if (this.index == 0) {
+                    count++;
+                    if (count > 3) {
+                        count = 0;
+                    }
+                }
+                else {
+                    count--;
+                    if (count < 0) {
+                        count = 3;
+                    }
+                }
+
+                ul.style.transform = "translate(" + -800 * count + "px)";
+
+
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].style.backgroundColor = "aquamarine";
+                }
+                btns[count].style.backgroundColor = "red";
+            }
+        }
+
+
+
+
+
+    };
+
+
+
+</script>
+
+</body>
+</html>
